@@ -7,6 +7,7 @@ class AppButton extends StatefulWidget {
   const AppButton({
     required this.title,
     required this.onPressed,
+    this.image,
     this.primary = true,
     super.key
 
@@ -14,6 +15,7 @@ class AppButton extends StatefulWidget {
 
   final String title;
   final void Function() onPressed;
+  final String? image;
   final bool primary;
 
   @override
@@ -45,9 +47,23 @@ class _AppButtonState extends State<AppButton> {
           ),
         ),
         child: Center(
-          child: Text(
-              widget.title,
-            style: AppText.Button1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.image != null) ...[
+                Image.asset(
+                  widget.image!,
+                  width: 25,
+                  height: 25,
+                ),
+                SizedBox(width: 8),
+              ],
+              Text(
+                widget.title,
+                style: AppText.Button1,
+              ),
+            ],
           ),
         ),
       ),

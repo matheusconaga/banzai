@@ -78,6 +78,34 @@ class _FormInputState extends State<FormInput> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: AppColors.primary,
+                  width: 2,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: AppColors.lightGrey,
+                  width: 2,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: AppColors.red,
+                  width: 2,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: AppColors.red,
+                  width: 2,
+                ),
+              ),
               suffixIcon: widget.obscure
                   ? IconButton(
                 onPressed: () {
