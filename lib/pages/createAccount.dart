@@ -1,7 +1,3 @@
-import 'dart:io';
-
-import 'package:banzai/pages/createAccount.dart';
-import 'package:banzai/routeGenerator.dart';
 import 'package:banzai/styles/appColors.dart';
 import 'package:banzai/styles/appText.dart';
 import 'package:banzai/styles/responsive.dart';
@@ -9,24 +5,26 @@ import 'package:banzai/styles/spacing.dart';
 import 'package:banzai/widgets/appLink.dart';
 import 'package:banzai/widgets/button.dart';
 import 'package:banzai/widgets/formInput.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-
-class Auth extends StatefulWidget {
-  const Auth({super.key});
+class CreateAccount extends StatefulWidget {
+  const CreateAccount({super.key});
 
   @override
-  State<Auth> createState() => _AuthState();
+  State<CreateAccount> createState() => _CreateAccountState();
 }
 
-class _AuthState extends State<Auth> {
+class _CreateAccountState extends State<CreateAccount> {
+
+  TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -51,8 +49,20 @@ class _AuthState extends State<Auth> {
                   Padding(
                     padding: EdgeInsets.only(top: Spacing.SpacingPP),
                     child: Text(
-                      "Insira o e-mail e a senha para continuar",
-                      style: AppText.Body1.copyWith(color: AppColors.grey),
+                      "Crie sua conta para poder gerenciar seus projetos",
+                      textAlign: TextAlign.center,
+                      style: AppText.Body1.copyWith(
+                        color: AppColors.grey,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: Spacing.SpacingM),
+                    child: FormInput(
+                      icon: Icon(Icons.person),
+                      title: "Nome",
+                      hint: "Insira seu nome",
+                      controller: _nameController,
                     ),
                   ),
                   Padding(
@@ -75,19 +85,17 @@ class _AuthState extends State<Auth> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: Spacing.SpacingGG),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: AppLink(
-                        title: "Esqueceu a senha?",
-                        func: () {
-                          print("Esqueci");
-                        },
-                      ),
+                    padding: EdgeInsets.only(top: Spacing.SpacingM, bottom: Spacing.SpacingGG),
+                    child: FormInput(
+                      icon: Icon(Icons.lock),
+                      title: "Confirmar senha",
+                      obscure: true,
+                      hint: "Insira sua senha novamente",
+                      controller: _confirmPasswordController,
                     ),
                   ),
                   AppButton(
-                    title: "Login",
+                    title: "Criar conta",
                     onPressed: (){
                       print("Ola");
                     },
@@ -98,7 +106,7 @@ class _AuthState extends State<Auth> {
                   AppButton(
                       image: "assets/images/logo_google.png",
                       primary: false,
-                      title: "Entrar com o Google",
+                      title: "Criar com o Google",
                       onPressed: (){
 
                       }
@@ -113,9 +121,9 @@ class _AuthState extends State<Auth> {
                   Padding(
                     padding: EdgeInsets.only(top: Spacing.SpacingPP),
                     child: AppLink(
-                      title: "Criar nova conta",
+                      title: "Entrar na conta",
                       func: (){
-                        Navigator.pushNamed(context, Routes.cadastro);
+                        Navigator.pop(context);
                       },
                     ),
                   ),
