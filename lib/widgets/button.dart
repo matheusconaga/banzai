@@ -35,7 +35,7 @@ class _AppButtonState extends State<AppButton> {
       child: ElevatedButton(
         onPressed: widget.onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: widget.primary ? AppColors.primary : AppColors.white,
+          backgroundColor: widget.primary ? AppColors.primary : Colors.white,
           foregroundColor: widget.primary ? AppColors.white : AppColors.primary,
           overlayColor: AppColors.darkPrimary,
           padding: const EdgeInsets.symmetric(vertical: 8),

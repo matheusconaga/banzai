@@ -21,6 +21,7 @@ class Auth extends StatefulWidget {
 }
 
 class _AuthState extends State<Auth> {
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -89,7 +90,7 @@ class _AuthState extends State<Auth> {
                   AppButton(
                     title: "Login",
                     onPressed: (){
-                      print("Ola");
+                      Navigator.pushNamed(context, Routes.home);
                     },
                   ),
                   SizedBox(

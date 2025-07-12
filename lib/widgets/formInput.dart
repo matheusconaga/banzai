@@ -66,6 +66,8 @@ class _FormInputState extends State<FormInput> {
             onSaved: widget.onSaved,
             style: AppText.Body1.copyWith(color: AppColors.grey),
             decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
               hintText: widget.hint,
               prefixIcon: widget.icon != null
                   ? Icon(
