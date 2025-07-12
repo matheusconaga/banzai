@@ -4,7 +4,7 @@ class AppColors {
 // neutral
   static const Color white = Color(0xFFF2F0F5);
   static const Color lightGrey = Color(0xFFDEDDDD);
-  static const Color grey = Color(0xFF636362);
+  static const Color grey = Color(0xFF6D6D6D);
 
 // actions
   static const Color green = Color(0xFF06A135);
