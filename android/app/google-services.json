@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "539213240882",
+    "project_id": "banzai-99f00",
+    "storage_bucket": "banzai-99f00.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539213240882:android:62573399ae1af268c3ba2b",
+        "android_client_info": {
+          "package_name": "com.example.banzai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlGfHTOKG-Bm9A3GB34Z4OKbP6QNgGaj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
