@@ -1,7 +1,10 @@
+import 'package:banzai/controllers/authController.dart';
+import 'package:banzai/models/user.dart' as model;
 import 'package:banzai/styles/appColors.dart';
 import 'package:banzai/styles/appText.dart';
 import 'package:banzai/styles/responsive.dart';
 import 'package:banzai/styles/spacing.dart';
+import 'package:banzai/utils/validators.dart';
 import 'package:banzai/widgets/appLink.dart';
 import 'package:banzai/widgets/button.dart';
 import 'package:banzai/widgets/formInput.dart';
@@ -17,10 +20,41 @@ class CreateAccount extends StatefulWidget {
 
 class _CreateAccountState extends State<CreateAccount> {
 
+  final AuthController _authController = AuthController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
+  String _mensagemErro = "";
+
+
+  _cadastrarUsuario() async {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.toLowerCase().trim();
+    final senha = _passwordController.text;
+    final confirmarSenha = _confirmPasswordController.text;
+
+    final erroNome = Validators.validarNome(name);
+    final erroEmail = Validators.validarEmail(email);
+    final erroSenha = Validators.validarSenha(senha);
+    final erroConfirmacao = Validators.validarConfirmacaoSenha(senha, confirmarSenha);
+
+    if (erroNome != null || erroEmail != null || erroSenha != null || erroConfirmacao != null) {
+      setState(() {
+        _mensagemErro = erroNome ?? erroEmail ?? erroSenha ?? erroConfirmacao!;
+      });
+      return;
+    }
+
+    final resultado = await _authController.register(name, email, senha);
+    if (resultado != null) {
+      setState(() {
+        _mensagemErro = resultado;
+      });
+    } else {
+      Navigator.pushReplacementNamed(context, "/home");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +131,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   AppButton(
                     title: "Criar conta",
                     onPressed: (){
-                      print("Ola");
+                      _cadastrarUsuario();
                     },
                   ),
                   SizedBox(
@@ -125,6 +159,17 @@ class _CreateAccountState extends State<CreateAccount> {
                       func: (){
                         Navigator.pop(context);
                       },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: Spacing.SpacingPP),
+                    child: Text(
+                        _mensagemErro,
+                      style: TextStyle(
+                        color: AppColors.red,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

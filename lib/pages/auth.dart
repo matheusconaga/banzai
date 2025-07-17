@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:banzai/controllers/authController.dart';
 import 'package:banzai/pages/createAccount.dart';
 import 'package:banzai/routeGenerator.dart';
 import 'package:banzai/styles/appColors.dart';
 import 'package:banzai/styles/appText.dart';
 import 'package:banzai/styles/responsive.dart';
 import 'package:banzai/styles/spacing.dart';
+import 'package:banzai/utils/validators.dart';
 import 'package:banzai/widgets/appLink.dart';
 import 'package:banzai/widgets/button.dart';
 import 'package:banzai/widgets/formInput.dart';
@@ -22,8 +24,36 @@ class Auth extends StatefulWidget {
 
 class _AuthState extends State<Auth> {
 
+  final AuthController _authController = AuthController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  String _mensagemErro = "";
+
+
+  _logarUsuario() async{
+    final email = _emailController.text.toLowerCase().trim();
+    final senha = _passwordController.text;
+
+    final erroEmail = Validators.validarEmail(email);
+    final erroSenha = Validators.validarSenha(senha);
+
+    if (erroEmail != null || erroSenha != null) {
+      setState(() {
+        _mensagemErro = erroEmail ?? erroSenha!;
+      });
+      return;
+    }
+
+    final resultado = await _authController.login(email, senha);
+    if (resultado != null) {
+      setState(() {
+        _mensagemErro = resultado;
+      });
+    } else {
+      Navigator.pushReplacementNamed(context, "/home");
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +120,7 @@ class _AuthState extends State<Auth> {
                   AppButton(
                     title: "Login",
                     onPressed: (){
-                      Navigator.pushNamed(context, Routes.home);
+                      _logarUsuario();
                     },
                   ),
                   SizedBox(
@@ -118,6 +148,17 @@ class _AuthState extends State<Auth> {
                       func: (){
                         Navigator.pushNamed(context, Routes.cadastro);
                       },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: Spacing.SpacingPP),
+                    child: Text(
+                      _mensagemErro,
+                      style: TextStyle(
+                        color: AppColors.red,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
