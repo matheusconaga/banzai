@@ -1,5 +1,5 @@
-import 'package:banzai/styles/appColors.dart';
-import 'package:banzai/styles/appText.dart';
+import 'package:banzai/app/core/constants/appColors.dart';
+import 'package:banzai/app/core/constants/appText.dart';
 import 'package:flutter/material.dart';
 
 class AppLink extends StatefulWidget {

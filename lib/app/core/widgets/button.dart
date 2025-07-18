@@ -1,6 +1,6 @@
-import 'package:banzai/styles/appColors.dart';
-import 'package:banzai/styles/appText.dart';
-import 'package:banzai/styles/responsive.dart';
+import 'package:banzai/app/core/constants/appColors.dart';
+import 'package:banzai/app/core/constants/appText.dart';
+import 'package:banzai/app/core/constants/responsive.dart';
 import 'package:flutter/material.dart';
 
 class AppButton extends StatefulWidget {

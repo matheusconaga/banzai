@@ -1,15 +1,15 @@
-import 'package:banzai/controllers/authController.dart';
-import 'package:banzai/models/user.dart' as model;
-import 'package:banzai/styles/appColors.dart';
-import 'package:banzai/styles/appText.dart';
-import 'package:banzai/styles/responsive.dart';
-import 'package:banzai/styles/spacing.dart';
-import 'package:banzai/utils/validators.dart';
-import 'package:banzai/widgets/appLink.dart';
-import 'package:banzai/widgets/button.dart';
-import 'package:banzai/widgets/formInput.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:banzai/app/core/constants/appColors.dart';
+import 'package:banzai/app/core/constants/appText.dart';
+import 'package:banzai/app/core/constants/responsive.dart';
+import 'package:banzai/app/core/constants/spacing.dart';
+import 'package:banzai/app/core/widgets/appLink.dart';
+import 'package:banzai/app/core/widgets/button.dart';
+import 'package:banzai/app/core/widgets/formInput.dart';
+import 'package:banzai/app/core/utils/validators.dart';
+import 'package:banzai/app/features/auth/view_model/auth_view_model.dart';
+import 'package:banzai/routes/routeGenerator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
@@ -20,15 +20,15 @@ class CreateAccount extends StatefulWidget {
 
 class _CreateAccountState extends State<CreateAccount> {
 
-  final AuthController _authController = AuthController();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
   String _mensagemErro = "";
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
+  Future<void> _cadastrarUsuario(BuildContext context) async {
+    final authVM = Provider.of<AuthViewModel>(context, listen: false);
 
-  _cadastrarUsuario() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.toLowerCase().trim();
     final senha = _passwordController.text;
@@ -46,10 +46,11 @@ class _CreateAccountState extends State<CreateAccount> {
       return;
     }
 
-    final resultado = await _authController.register(name, email, senha);
-    if (resultado != null) {
+    final resultado = await authVM.register(name, email, senha, confirmarSenha);
+
+    if (!resultado) {
       setState(() {
-        _mensagemErro = resultado;
+        _mensagemErro = authVM.errorMessage ?? "";
       });
     } else {
       Navigator.pushReplacementNamed(context, "/home");
@@ -58,7 +59,9 @@ class _CreateAccountState extends State<CreateAccount> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    final authVM = Provider.of<AuthViewModel>(context);
+
+    return Scaffold(
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -68,11 +71,7 @@ class _CreateAccountState extends State<CreateAccount> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    "assets/images/logo_banzai.png",
-                    width: 100,
-                    height: 100,
-                  ),
+                  Image.asset("assets/images/logo_banzai.png", width: 100, height: 100),
                   Padding(
                     padding: EdgeInsets.only(top: Spacing.SpacingP),
                     child: Text(
@@ -85,9 +84,7 @@ class _CreateAccountState extends State<CreateAccount> {
                     child: Text(
                       "Crie sua conta para poder gerenciar seus projetos",
                       textAlign: TextAlign.center,
-                      style: AppText.Body1.copyWith(
-                        color: AppColors.grey,
-                      ),
+                      style: AppText.Body1.copyWith(color: AppColors.grey),
                     ),
                   ),
                   Padding(
@@ -128,27 +125,25 @@ class _CreateAccountState extends State<CreateAccount> {
                       controller: _confirmPasswordController,
                     ),
                   ),
-                  AppButton(
+                  authVM.isLoading
+                      ? const CircularProgressIndicator()
+                      : AppButton(
                     title: "Criar conta",
-                    onPressed: (){
-                      _cadastrarUsuario();
-                    },
+                    onPressed: () => _cadastrarUsuario(context),
                   ),
-                  SizedBox(
-                    height: Spacing.SpacingP,
-                  ),
+                  SizedBox(height: Spacing.SpacingP),
                   AppButton(
-                      image: "assets/images/logo_google.png",
-                      primary: false,
-                      title: "Criar com o Google",
-                      onPressed: (){
-
-                      }
+                    image: "assets/images/logo_google.png",
+                    primary: false,
+                    title: "Criar com o Google",
+                    onPressed: () {
+                      // Em breve
+                    },
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: Spacing.SpacingXG),
                     child: Text(
-                      "Ainda não possui conta?",
+                      "Já possui conta?",
                       style: AppText.Body1.copyWith(color: AppColors.grey),
                     ),
                   ),
@@ -156,25 +151,23 @@ class _CreateAccountState extends State<CreateAccount> {
                     padding: EdgeInsets.only(top: Spacing.SpacingPP),
                     child: AppLink(
                       title: "Entrar na conta",
-                      func: (){
-                        Navigator.pop(context);
-                      },
+                      func: () => Navigator.pop(context),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: Spacing.SpacingPP),
-                    child: Text(
-                        _mensagemErro,
-                      style: TextStyle(
-                        color: AppColors.red,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                  if (authVM.errorMessage != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: Spacing.SpacingPP),
+                      child: Text(
+                        authVM.errorMessage!,
+                        style: TextStyle(
+                          color: AppColors.red,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
-
             ),
           ),
         ),

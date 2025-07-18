@@ -1,19 +1,14 @@
-import 'dart:io';
-
-import 'package:banzai/controllers/authController.dart';
-import 'package:banzai/pages/createAccount.dart';
-import 'package:banzai/routeGenerator.dart';
-import 'package:banzai/styles/appColors.dart';
-import 'package:banzai/styles/appText.dart';
-import 'package:banzai/styles/responsive.dart';
-import 'package:banzai/styles/spacing.dart';
-import 'package:banzai/utils/validators.dart';
-import 'package:banzai/widgets/appLink.dart';
-import 'package:banzai/widgets/button.dart';
-import 'package:banzai/widgets/formInput.dart';
+import 'package:banzai/app/core/constants/appColors.dart';
+import 'package:banzai/app/core/constants/appText.dart';
+import 'package:banzai/app/core/constants/responsive.dart';
+import 'package:banzai/app/core/constants/spacing.dart';
+import 'package:banzai/app/core/widgets/appLink.dart';
+import 'package:banzai/app/core/widgets/button.dart';
+import 'package:banzai/app/core/widgets/formInput.dart';
+import 'package:banzai/app/features/auth/view_model/auth_view_model.dart';
+import 'package:banzai/routes/routeGenerator.dart';
 import 'package:flutter/material.dart';
-
-
+import 'package:provider/provider.dart';
 
 class Auth extends StatefulWidget {
   const Auth({super.key});
@@ -22,41 +17,30 @@ class Auth extends StatefulWidget {
   State<Auth> createState() => _AuthState();
 }
 
+
 class _AuthState extends State<Auth> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  final AuthController _authController = AuthController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  String _mensagemErro = "";
+  Future<void> _logarUsuario(BuildContext context) async {
+    final authVM = Provider.of<AuthViewModel>(context, listen: false);
 
-
-  _logarUsuario() async{
     final email = _emailController.text.toLowerCase().trim();
     final senha = _passwordController.text;
 
-    final erroEmail = Validators.validarEmail(email);
-    final erroSenha = Validators.validarSenha(senha);
+    final resultado = await authVM.login(email, senha);
 
-    if (erroEmail != null || erroSenha != null) {
-      setState(() {
-        _mensagemErro = erroEmail ?? erroSenha!;
-      });
-      return;
-    }
-
-    final resultado = await _authController.login(email, senha);
-    if (resultado != null) {
-      setState(() {
-        _mensagemErro = resultado;
-      });
-    } else {
+    if (resultado == true) {
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, "/home");
     }
-
   }
+
 
   @override
   Widget build(BuildContext context) {
+    final authVM = Provider.of<AuthViewModel>(context);
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -117,22 +101,20 @@ class _AuthState extends State<Auth> {
                       ),
                     ),
                   ),
-                  AppButton(
+                  authVM.isLoading
+                      ? const CircularProgressIndicator()
+                      : AppButton(
                     title: "Login",
-                    onPressed: (){
-                      _logarUsuario();
-                    },
+                    onPressed: () => _logarUsuario(context),
                   ),
-                  SizedBox(
-                    height: Spacing.SpacingP,
-                  ),
+                  SizedBox(height: Spacing.SpacingP),
                   AppButton(
-                      image: "assets/images/logo_google.png",
-                      primary: false,
-                      title: "Entrar com o Google",
-                      onPressed: (){
-
-                      }
+                    image: "assets/images/logo_google.png",
+                    primary: false,
+                    title: "Entrar com o Google",
+                    onPressed: () {
+                      // Google login ainda não implementado
+                    },
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: Spacing.SpacingXG),
@@ -145,25 +127,25 @@ class _AuthState extends State<Auth> {
                     padding: EdgeInsets.only(top: Spacing.SpacingPP),
                     child: AppLink(
                       title: "Criar nova conta",
-                      func: (){
+                      func: () {
                         Navigator.pushNamed(context, Routes.cadastro);
                       },
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: Spacing.SpacingPP),
-                    child: Text(
-                      _mensagemErro,
-                      style: TextStyle(
-                        color: AppColors.red,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                  if (authVM.errorMessage != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: Spacing.SpacingPP),
+                      child: Text(
+                        authVM.errorMessage!,
+                        style: const TextStyle(
+                          color: AppColors.red,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
-
             ),
           ),
         ),

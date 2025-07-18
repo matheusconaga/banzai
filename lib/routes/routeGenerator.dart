@@ -1,12 +1,15 @@
+import 'package:banzai/app/core/widgets/splash_page.dart';
+import 'package:banzai/app/features/auth/view/login_page.dart';
+import 'package:banzai/app/features/auth/view/register_page.dart';
+import 'package:banzai/app/features/home/view/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:banzai/pages/auth.dart';
-import 'package:banzai/pages/createAccount.dart';
-import 'package:banzai/pages/home.dart';
 
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routes.splashPage:
+        return MaterialPageRoute(builder: (_) => SplashPage());
       case Routes.login:
         return MaterialPageRoute(builder: (_) => Auth());
       case Routes.cadastro:
@@ -33,7 +36,8 @@ class RouteGenerator {
 }
 
 class Routes {
-  static const String login = "/";
+  static const String splashPage = "/";
+  static const String login = "/login";
   static const String cadastro = "/cadastro";
   static const String home = "/home";
 
